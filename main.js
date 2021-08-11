@@ -31,8 +31,9 @@ const screen = document.querySelector('.screen');
 const screenArr = [];
 let num1;
 let num2;
+let numbersCount = 0;
 let operator = '';
-let count = 0;
+let operatorCount = 0;
 let value;
 let result;
 let dot = 0;
@@ -41,22 +42,19 @@ buttons.forEach(btn => {
     btn.addEventListener('click', (e) => {
         value = e.target.value;
 
-
         if(value == '+' || value == '-' || value == '*' || value == '/'){
             dot = 0;
-            if(count > 0){
-                
+            numbersCount = 0;
+            if(operatorCount > 0){
                 num2 = screenArr.join('');
                 screenArr.length = 0;
 
                 num1 = parseFloat(num1);
                 num2 = parseFloat(num2);
-
                 result = operate(num1, num2, operator);
 
                 if(result){
                     screen.textContent = result;
-                
                     num1 = result;
                     operator = value;
                 }else{
@@ -68,22 +66,21 @@ buttons.forEach(btn => {
                 num1 = result || screenArr.join('') || 0;
                 screenArr.length = 0;
                 operator = value;
-                screenArr.length = 0;
-                count++;
+                operatorCount++;
             }
-        }else if(value == 'delete'){
-            console.log(true);
         }else if(value == 'clear'){
+            numbersCount = 0;
             screenArr.length = 0;
             screen.textContent = 0;
             num1 = 0;
             num2 = 0;
             operator = '';
             result = 0;
-            count = 0;
+            operatorCount = 0;
             dot = 0;
         }else if(value == '='){
             num2 = screenArr.join('') || 0;
+            numbersCount = 0;
             
             num1 = parseFloat(num1);
             num2 = parseFloat(num2);
@@ -92,14 +89,24 @@ buttons.forEach(btn => {
             if(result){
                 num1 = result;
                 screen.textContent = result;
-                count = 0;
+                operatorCount = 0;
                 dot = 0;
             }else{
                 screen.textContent = 'ERROR, try again';
             }
         }else if(value == '.'){
             dot++;
-            if(dot == 1 && screenArr.length == 0){
+            numbersCount = 0;
+            if(result){
+                num1 = 0;
+                num2 = 0;
+                operator = '';
+                result = 0;
+                operatorCount = 0;
+                screenArr.length = 0;
+                screenArr.push(0, value);
+                screen.textContent = screenArr.join('');
+            }else if(dot == 1 && screenArr.length == 0){
                 screenArr.push(0, value);
                 screen.textContent = screenArr.join('');
             }else if(dot == 1){
@@ -107,8 +114,11 @@ buttons.forEach(btn => {
                 screen.textContent = screenArr.join('');
             }
         }else{
-            screenArr.push(value);
-            screen.textContent = screenArr.join('');
+            if(numbersCount < 10){
+                screenArr.push(value);
+                screen.textContent = screenArr.join('');
+            }
         }
+        numbersCount++;
     })
 })
