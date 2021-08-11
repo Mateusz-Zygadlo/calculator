@@ -43,6 +43,7 @@ buttons.forEach(btn => {
 
 
         if(value == '+' || value == '-' || value == '*' || value == '/'){
+            dot = 0;
             if(count > 0){
                 
                 num2 = screenArr.join('');
@@ -53,14 +54,16 @@ buttons.forEach(btn => {
 
                 result = operate(num1, num2, operator);
 
-                screen.textContent = result;
-
-                console.log(num1);
-                console.log(num2);
-                console.log(operator);
+                if(result){
+                    screen.textContent = result;
                 
-                num1 = result;
-                operator = value;
+                    num1 = result;
+                    operator = value;
+                }else{
+                    screen.textContent = 'ERROR, try again';
+                    num1 = 0;
+                    num2 = 0;
+                }
             }else{
                 num1 = result || screenArr.join('') || 0;
                 screenArr.length = 0;
@@ -68,6 +71,8 @@ buttons.forEach(btn => {
                 screenArr.length = 0;
                 count++;
             }
+        }else if(value == 'delete'){
+            console.log(true);
         }else if(value == 'clear'){
             screenArr.length = 0;
             screen.textContent = 0;
@@ -76,6 +81,7 @@ buttons.forEach(btn => {
             operator = '';
             result = 0;
             count = 0;
+            dot = 0;
         }else if(value == '='){
             num2 = screenArr.join('') || 0;
             
@@ -83,9 +89,23 @@ buttons.forEach(btn => {
             num2 = parseFloat(num2);
             result = operate(num1, num2, operator);
 
-            num1 = result;
-            screen.textContent = result;
-            count = 0;
+            if(result){
+                num1 = result;
+                screen.textContent = result;
+                count = 0;
+                dot = 0;
+            }else{
+                screen.textContent = 'ERROR, try again';
+            }
+        }else if(value == '.'){
+            dot++;
+            if(dot == 1 && screenArr.length == 0){
+                screenArr.push(0, value);
+                screen.textContent = screenArr.join('');
+            }else if(dot == 1){
+                screenArr.push(value);
+                screen.textContent = screenArr.join('');
+            }
         }else{
             screenArr.push(value);
             screen.textContent = screenArr.join('');
